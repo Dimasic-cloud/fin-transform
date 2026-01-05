@@ -1,6 +1,6 @@
 # class for exports data and wrighting it to file
 
-from init_logger import logger
+from core.logging import logger
 
 class External:
     # initialization with simple checking input data

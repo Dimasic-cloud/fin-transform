@@ -1,5 +1,4 @@
 log
 __pycache__
 log/log1.log
-
-.env
+config/.env
