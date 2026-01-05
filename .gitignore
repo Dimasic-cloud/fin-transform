@@ -1,4 +1,3 @@
-log
-__pycache__
-log/log1.log
 config/.env
+core/__pycache__/
+venv/

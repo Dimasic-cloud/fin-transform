@@ -1,6 +1,6 @@
 # class for exports data and wrighting it to file
 
-from core.logging import logger
+from core.logger import logger
 
 class External:
     # initialization with simple checking input data
@@ -23,7 +23,6 @@ class External:
         else:
             logger.debug("the transmitted data was empty")
 
-# block checking work
 if __name__ == "__main__":
     ex = External("a", {"a": 1}, "demo")
     logger.info("the object has been created")
