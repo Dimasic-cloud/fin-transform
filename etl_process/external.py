@@ -2,40 +2,47 @@
 
 import sys
 from pathlib import Path
+import os
 
 # setting the parent directory
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from core.logger import logger
+import requests
+from dotenv import load_dotenv
+
+
+# extract env
+load_dotenv()
 
 
 class External:
-    def __init__(self, url: str, params: dict, api_key: str):
+    def __init__(self, url: str, params: dict):
         """
         initialization with simple checking input data
-        
-        :param self: link to object
-        :param url: URL adress to data extraction website
-        :param params: dictionary with query parameters
-        :param api_key: API key for access data on website
         """
-        self._url = self._checking(url)
-        self._api_key = self._checking(api_key)
-        self._params = self._checking(params)
+        self._url = url
+        logger.debug("added: %s", self._url)
+        self._params = params
+        logger.debug(f"added: {self._params}")
 
-    def _checking(self, elem):
+    def extract(self):
         """
-            checking input data
-
-            :param elem: param for validation
+        extracting data from website
         """
-        if elem:
-            logger.debug(f"success! {elem} has been correct")
-            return elem
+        resp = requests.get(self._url, params=self._params)
+        logger.debug(f"respons status: {resp.status_code}")
+        data = resp.json()
 
-        logger.error(f"incorrect data: {elem}")
+        # open context for writing to file
+        with open('data/raw.json', "a", encoding="UTF-8") as file:
+            n = file.write(data)
+            logger.debug(f"success! writing data is: {n}")
 
 
 if __name__ == "__main__":
-    ex = External("a", {"a": 1}, "demo")
-    logger.info("the object has been created")
+    params = os.getenv("PARAMS")
+    ex = External('https://www.alphavantage.co/query', params)
+    logger.debug("created object")
+    ex.extract()
+    logger.debug("writing data")
