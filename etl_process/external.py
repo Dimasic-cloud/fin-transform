@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from core.logger import logger
 import requests
+from json import dump
 from dotenv import load_dotenv
 
 
@@ -22,9 +23,9 @@ class External:
         initialization with simple checking input data
         """
         self._url = url
-        logger.debug("added: %s", self._url)
+        logger.debug("added: %s", url)
         self._params = params
-        logger.debug(f"added: {self._params}")
+        logger.debug(f"added: {params}")
 
     def extract(self):
         """
@@ -36,12 +37,13 @@ class External:
 
         # open context for writing to file
         with open('data/raw.json', "a", encoding="UTF-8") as file:
-            n = file.write(data)
-            logger.debug(f"success! writing data is: {n}")
+            dump(data, file, ensure_ascii=False)
+            logger.debug("success")
 
 
 if __name__ == "__main__":
-    params = os.getenv("PARAMS")
+    params = {"function": "TIME_SERIES_MONTHLY", "symbol": "IBM"}
+    params["apikey"] = os.getenv("APIKEY")
     ex = External('https://www.alphavantage.co/query', params)
     logger.debug("created object")
     ex.extract()
